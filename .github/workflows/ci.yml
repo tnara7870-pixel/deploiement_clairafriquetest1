@@ -1,0 +1,102 @@
+name: CI
+
+# Déclenché à chaque push (toutes branches) et à chaque pull request vers
+# main — pas besoin d'un service MySQL séparé : phpunit.xml bascule déjà
+# la connexion sur SQLite en mémoire (DB_CONNECTION=sqlite,
+# DB_DATABASE=:memory:) pour la durée des tests, exactement comme en local.
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  tests:
+    name: Tests (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ["8.2", "8.3"]
+
+    steps:
+      - name: Cloner le dépôt
+        uses: actions/checkout@v4
+
+      - name: Installer PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, dom, fileinfo, sqlite3, pdo_sqlite, gd, zip, bcmath, intl, curl, xml
+          coverage: none
+          tools: composer:v2
+
+      - name: Mettre en cache les dépendances Composer
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ matrix.php }}-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+            composer-${{ matrix.php }}-
+
+      - name: Installer les dépendances PHP
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Copier le fichier d'environnement
+        run: cp .env.example .env
+
+      - name: Générer la clé d'application
+        run: php artisan key:generate
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Installer les dépendances front-end
+        run: npm ci
+
+      - name: Compiler les assets (Vite)
+        # Requis : les vues Blade utilisent @vite(...), qui lève une
+        # exception si aucun manifest n'existe — même pour des tests qui
+        # ne vérifient pas le rendu visuel mais traversent une page.
+        run: npm run build
+
+      - name: Lancer la suite de tests
+        env:
+          # AdminSeeder exige ADMIN_PASSWORD ; non utilisé par les tests
+          # eux-mêmes (aucun seeder n'est appelé), mais défini par
+          # précaution si un test venait à en dépendre.
+          ADMIN_EMAIL: admin@claireafrique.sn
+          ADMIN_PASSWORD: mot-de-passe-ci-uniquement
+        run: php artisan test
+
+  lint:
+    name: Style de code (Pint)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cloner le dépôt
+        uses: actions/checkout@v4
+
+      - name: Installer PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+          tools: composer:v2
+
+      - name: Mettre en cache les dépendances Composer
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-8.3-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+            composer-8.3-
+
+      - name: Installer les dépendances PHP
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Vérifier le style de code (Pint, sans modifier les fichiers)
+        run: ./vendor/bin/pint --test
