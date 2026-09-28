@@ -96,6 +96,10 @@ return [
             ],
             'retry_after' => 60,
         ],
+        'brevo+api' => [
+    'transport' => 'brevo+api',
+    'key' => env('MAIL_BREVO_KEY'),
+],
 
     ],
 
