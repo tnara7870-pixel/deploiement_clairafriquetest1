@@ -271,7 +271,8 @@ function toggleMenuMobile() {
     btn.setAttribute('aria-expanded', ouvert ? 'false' : 'true');
 }
 
-// ── Menu "Mon compte" ────────────────────────────────────────────────
+// ── Menu "Mon compte" (accessible au clic, pas seulement au survol —
+// group-hover ne fonctionne pas sur tactile) ────────────────────────
 function toggleMenuCompte() {
     const menu = document.getElementById('menu-compte-dropdown');
     const btn  = document.getElementById('btn-menu-compte');
@@ -290,13 +291,11 @@ document.addEventListener('click', function (e) {
 // ── Toast ──────────────────────────────────────────────────────────
 function afficherToast(msg, type = 'success') {
     const toast = document.getElementById('toast');
-    if (!toast) return;
-
     const iconeSucces = document.querySelector('.toast-icone-succes');
     const iconeErreur = document.querySelector('.toast-icone-erreur');
     const text  = document.getElementById('toast-msg');
 
-    if (text) text.textContent = msg;
+    text.textContent = msg;
     iconeSucces?.classList.toggle('hidden', type === 'error');
     iconeErreur?.classList.toggle('hidden', type !== 'error');
     toast.classList.toggle('bg-red-700', type === 'error');
@@ -311,30 +310,9 @@ function afficherToast(msg, type = 'success') {
     }, 3000);
 }
 
-// ── Helper pour gérer les réponses Fetch ────────────────────────────
-async function traiterReponseFetch(response) {
-    if (response.status === 401) {
-        afficherToast('Veuillez vous connecter pour effectuer cette action.', 'error');
-        setTimeout(() => window.location.href = '/login', 1500);
-        throw new Error('Unauthenticated');
-    }
-    
-    if (response.status === 419) {
-        afficherToast('Session expirée. Veuillez rafraîchir la page.', 'error');
-        throw new Error('CSRF Token Mismatch');
-    }
-
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: 'Erreur serveur (' + response.status + ')' }));
-        throw new Error(errorData.message || 'Une erreur est survenue');
-    }
-
-    return response.json();
-}
-
 // ── Ajouter au panier AJAX ─────────────────────────────────────────
 function ajouterPanier(btn, idArticle) {
-    const token = document.querySelector('meta[name="csrf-token"]')?.content;
+    const token = document.querySelector('meta[name="csrf-token"]').content;
 
     btn.disabled = true;
     btn.textContent = '…';
@@ -344,28 +322,24 @@ function ajouterPanier(btn, idArticle) {
         headers: {
             'X-CSRF-TOKEN': token,
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
         },
         body: JSON.stringify({ idArticle, quantite: 1 })
     })
-    .then(traiterReponseFetch)
+    .then(r => r.json())
     .then(data => {
         if (data.success) {
             afficherToast(data.message);
+            // Mettre à jour le badge panier
             const badge = document.getElementById('badge-panier');
             if (badge) {
                 badge.textContent = data.nbArticles;
                 badge.classList.remove('hidden');
             }
         } else {
-            afficherToast(data.message || 'Impossible d’ajouter l’article.', 'error');
+            afficherToast(data.message, 'error');
         }
     })
-    .catch(err => {
-        if (err.message !== 'Unauthenticated' && err.message !== 'CSRF Token Mismatch') {
-            afficherToast(err.message || 'Erreur réseau, réessayez.', 'error');
-        }
-    })
+    .catch(() => afficherToast('Erreur réseau, réessayez.', 'error'))
     .finally(() => {
         btn.disabled = false;
         btn.textContent = '+';
@@ -387,51 +361,50 @@ function changerQte(idLigne, delta, btn) {
 }
 
 function mettreAJourQuantite(idLigne, quantite) {
-    const token = document.querySelector('meta[name="csrf-token"]')?.content;
+    const token = document.querySelector('meta[name="csrf-token"]').content;
 
     fetch(`/catalogue/panier/${idLigne}/ajax`, {
         method: 'PATCH',
         headers: {
             'X-CSRF-TOKEN': token,
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
         },
         body: JSON.stringify({ quantite: parseInt(quantite) })
     })
-    .then(traiterReponseFetch)
+    .then(r => r.json())
     .then(data => {
         if (data.success) {
             afficherToast('Quantité mise à jour');
+            // Mettre à jour le sous-total et le total
             const sousTotal = document.getElementById('sous-total-' + idLigne);
             const total     = document.getElementById('total-panier');
             if (sousTotal) sousTotal.textContent = data.sousTotal;
             if (total)     total.textContent     = data.total;
         } else {
             afficherToast(data.message, 'error');
+            // Remettre l'ancienne valeur
             const input = document.getElementById('qte-' + idLigne);
             if (input) input.value = data.quantite;
         }
     })
-    .catch(err => {
-        if (err.message !== 'Unauthenticated' && err.message !== 'CSRF Token Mismatch') {
-            afficherToast('Erreur lors de la mise à jour de la quantité.', 'error');
-        }
-    });
+    .catch(() => afficherToast('Erreur réseau : la quantité n\'a peut-être pas été mise à jour.', 'error'));
 }
 
 // ── Toggle favori AJAX ─────────────────────────────────────────────
 function toggleFavori(btn, idArticle) {
-    const token = document.querySelector('meta[name="csrf-token"]')?.content;
+    const token = document.querySelector('meta[name="csrf-token"]').content;
 
     fetch(`/catalogue/favoris/${idArticle}/ajax`, {
         method: 'POST',
-        headers: { 
-            'X-CSRF-TOKEN': token,
-            'Accept': 'application/json'
-        }
+        headers: { 'X-CSRF-TOKEN': token }
     })
-    .then(traiterReponseFetch)
+    .then(r => r.json())
     .then(data => {
+        // Les deux icônes (pleine / vide) sont déjà rendues côté serveur
+        // (voir carte-article.blade.php) : on bascule juste laquelle est
+        // visible. On ne peut pas injecter un composant Blade via du
+        // JavaScript — un composant Blade ne se compile que côté serveur,
+        // jamais dans le navigateur.
         const wrap   = btn.querySelector('.favori-icone-wrap');
         const pleine = btn.querySelector('.favori-icone-pleine');
         const vide   = btn.querySelector('.favori-icone-vide');
@@ -456,11 +429,7 @@ function toggleFavori(btn, idArticle) {
             afficherToast('Retiré des favoris');
         }
     })
-    .catch(err => {
-        if (err.message !== 'Unauthenticated' && err.message !== 'CSRF Token Mismatch') {
-            afficherToast('Erreur réseau, réessayez.', 'error');
-        }
-    });
+    .catch(() => afficherToast('Erreur réseau, réessayez.', 'error'));
 }
 </script>
 
