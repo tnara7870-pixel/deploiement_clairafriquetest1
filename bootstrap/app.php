@@ -15,21 +15,21 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // 1. Exclure la route IPN de la vérification CSRF
+        // 1. Confiance aux proxies (ex: Railway / Load Balancers)
+        $middleware->trustProxies(at: '*');
+
+        // 2. Exclure la route IPN de la vérification CSRF
         $middleware->validateCsrfTokens(except: [
             'catalogue/paiement/ipn',
         ]);
 
-        // 2. Enregistrer les alias de middlewares
+        // 3. Enregistrer les alias de middlewares
         $middleware->alias([
             'role' => CheckRole::class,
             'permission' => PermissionMiddleware::class,
-            // Middleware custom pour invalider immédiatement les comptes
-            // bloqués (J5). L'alias 'account.active' est utilisé dans les
-            // groupes de routes protégées par 'auth'.
+            // Middleware custom pour invalider immédiatement les comptes bloqués
             'account.active' => EnsureAccountActive::class,
-            // Bloque l'accès à l'espace client tant que l'adresse email
-            // n'a pas été confirmée via le code envoyé à l'inscription.
+            // Bloque l'accès tant que l'email n'a pas été confirmé
             'email.verified' => EnsureEmailIsVerified::class,
         ]);
     })
