@@ -105,11 +105,7 @@ class PaiementController extends Controller
 
     public function ipn(Request $request): mixed
     {
-        Log::info('IPN PayDunya reçu', [
-            'all' => $request->all(),
-            'raw' => $request->getContent(),
-        ]);
-
+      
         $token = $request->input('data.invoice.token');
 
         if (! $token) {
