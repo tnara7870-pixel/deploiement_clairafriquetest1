@@ -110,7 +110,7 @@ class PaiementController extends Controller
             'raw' => $request->getContent(),
         ]);
 
-        $token = $request->get('token');
+        $token = $request->input('data.invoice.token');
 
         if (! $token) {
             return response()->json(['status' => 'error', 'message' => 'Token manquant'], 400);
