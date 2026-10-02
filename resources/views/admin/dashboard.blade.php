@@ -6,7 +6,7 @@
 @section('content')
 
 {{-- KPIs --}}
-<div class="grid grid-cols-4 gap-3 mb-5">
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
     <a href="{{ route('admin.rapports') }}" class="bg-white border border-primary-pale rounded-xl p-4 hover:border-primary hover:shadow-sm transition-all">
         <div class="text-xs text-gray-400 mb-1">Ventes du jour</div>
         <div class="text-2xl font-semibold text-primary-dark">
@@ -40,9 +40,9 @@
 </div>
 
 {{-- Graphiques --}}
-<div class="grid grid-cols-3 gap-4 mb-5">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-5">
     {{-- Ventes par mois --}}
-    <div class="col-span-2 bg-white border border-primary-pale rounded-xl p-4">
+    <div class="lg:col-span-2 bg-white border border-primary-pale rounded-xl p-4">
         <div class="text-sm font-semibold text-primary-dark mb-4">
             Ventes mensuelles (6 derniers mois)
         </div>
@@ -218,7 +218,7 @@
 @endif
 
 {{-- Top articles vendus & Ruptures imminentes --}}
-<div class="grid grid-cols-2 gap-4 mb-5">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
     {{-- Top 5 articles vendus --}}
     <div class="bg-white border border-primary-pale rounded-xl overflow-hidden">
         <div class="px-4 py-3 border-b border-primary-pale flex justify-between items-center">
@@ -293,7 +293,7 @@
 </div>
 
 {{-- Dernières commandes & Alertes --}}
-<div class="grid grid-cols-2 gap-4">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     {{-- Dernières commandes --}}
     <div class="bg-white border border-primary-pale rounded-xl overflow-hidden">
         <div class="px-4 py-3 border-b border-primary-pale flex justify-between items-center">

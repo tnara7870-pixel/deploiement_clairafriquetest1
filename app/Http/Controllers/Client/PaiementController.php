@@ -105,7 +105,7 @@ class PaiementController extends Controller
 
     public function ipn(Request $request): mixed
     {
-      
+
         $token = $request->input('data.invoice.token');
 
         if (! $token) {

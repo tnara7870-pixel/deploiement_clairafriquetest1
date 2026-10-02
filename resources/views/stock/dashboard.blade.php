@@ -5,7 +5,7 @@
 @section('content')
 
 {{-- KPIs --}}
-<div class="grid grid-cols-4 gap-3 mb-5">
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
     <a href="{{ route('stock.articles') }}" class="bg-white border border-primary-pale rounded-xl p-4 hover:border-primary hover:shadow-sm transition-all">
         <div class="text-xs text-gray-400 mb-1">Total articles</div>
         <div class="text-2xl font-semibold text-primary-dark">
@@ -35,7 +35,7 @@
 </div>
 
 {{-- Grille principale --}}
-<div class="grid grid-cols-2 gap-4">
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
 
     {{-- Inventaire --}}
     <div class="bg-white border border-primary-pale rounded-xl overflow-hidden">

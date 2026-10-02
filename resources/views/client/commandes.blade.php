@@ -19,18 +19,20 @@
     @else
 
         <form method="GET"
-            class="bg-white border border-primary-pale rounded-xl p-4 mb-5 flex items-center justify-center gap-3">
+            class="bg-white border border-primary-pale rounded-xl p-4 mb-5 flex flex-col sm:flex-row sm:items-center justify-center gap-3">
             <x-filtre-date />
 
-            <button type="submit"
-                class="bg-primary text-white px-4 h-9 rounded-lg text-sm hover:bg-primary-light shrink-0">
-                Filtrer
-            </button>
+            <div class="flex items-center gap-3">
+                <button type="submit"
+                    class="bg-primary text-white px-4 h-9 rounded-lg text-sm hover:bg-primary-light shrink-0">
+                    Filtrer
+                </button>
 
-            <a href="{{ route('client.commandes') }}"
-                class="border border-gray-200 text-gray-500 px-4 h-9 flex items-center rounded-lg text-sm hover:bg-gray-50 shrink-0">
-                Réinitialiser
-            </a>
+                <a href="{{ route('client.commandes') }}"
+                    class="border border-gray-200 text-gray-500 px-4 h-9 flex items-center rounded-lg text-sm hover:bg-gray-50 shrink-0">
+                    Réinitialiser
+                </a>
+            </div>
         </form>
 
         <div class="bg-white border border-primary-pale rounded-xl overflow-hidden">

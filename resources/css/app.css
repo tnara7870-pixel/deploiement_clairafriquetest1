@@ -16,6 +16,15 @@
     outline-offset: 2px;
   }
 
+  @media (max-width: 767px) {
+    table {
+      display: block;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+
   /* Feedback visible au clic — l'utilisateur doit voir que son action a
      été prise en compte, même avant la réponse du serveur. */
   button, a, [type="submit"] {

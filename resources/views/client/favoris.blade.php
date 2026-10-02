@@ -2,7 +2,7 @@
 @section('title', 'Mes favoris')
 
 @section('content')
-<div class="max-w-5xl mx-auto px-6 py-8">
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
     <h1 class="text-lg font-semibold text-primary-dark mb-6">Mes favoris</h1>
 
     @if($favoris->isEmpty())
@@ -15,7 +15,7 @@
             </a>
         </div>
     @else
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             @foreach($favoris as $favori)
             <div class="bg-white border border-primary-pale rounded-xl overflow-hidden
                         hover:border-primary transition-colors">

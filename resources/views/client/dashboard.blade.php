@@ -2,7 +2,7 @@
 @section('title', 'Mon espace — ClaireAfrique')
 
 @section('content')
-<div class="max-w-5xl mx-auto px-6 py-8">
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
 
     {{-- Bonjour --}}
     <div class="mb-8">
@@ -15,7 +15,7 @@
     </div>
 
     {{-- KPIs --}}
-    <div class="grid grid-cols-3 gap-4 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div class="bg-white border border-primary-pale rounded-2xl p-5">
             <div class="text-xs text-gray-400 mb-1">Total commandes</div>
             <div class="text-2xl font-bold text-primary-dark">{{ $totalCommandes }}</div>
@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         {{-- Dernières commandes --}}
         <div class="bg-white border border-primary-pale rounded-2xl overflow-hidden">

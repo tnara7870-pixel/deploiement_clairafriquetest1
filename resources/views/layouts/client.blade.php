@@ -12,7 +12,7 @@
 <body class="bg-primary-bg font-sans text-gray-800 min-h-screen flex flex-col">
 
     {{-- NAVBAR --}}
-    <nav class="bg-primary-dark sticky top-0 z-40 relative">
+    <nav class="bg-primary-dark sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-6 h-13 flex items-center justify-between py-3">
             <a href="{{ route('home') }}"
                 class="font-serif text-xl tracking-tight {{ request()->routeIs('home') ? 'text-white' : 'text-primary-pale hover:text-white' }}">
@@ -20,7 +20,7 @@
             </a>
 
             {{-- Liens nav (masqués sur mobile, voir menu hamburger) --}}
-            <div class="hidden md:flex items-center gap-6">
+            <div class="hidden lg:flex items-center gap-6">
                 <a href="{{ route('client.catalogue') }}"
                     class="text-xs {{ request()->routeIs('client.catalogue') ? 'text-white' : 'text-primary-pale hover:text-white' }}">
                     Catalogue
@@ -50,7 +50,7 @@
 
             {{-- Barre de recherche (masquée sur mobile, reprise dans le panneau hamburger) --}}
             <form action="{{ route('client.catalogue') }}" method="GET"
-                class="hidden md:flex items-center gap-2">
+                class="hidden lg:flex items-center gap-2">
                 <label for="recherche-nav-desktop" class="sr-only">Rechercher un article</label>
                 <input id="recherche-nav-desktop" type="text" name="search" value="{{ request('search') }}"
                     placeholder="Rechercher un article…"
@@ -66,7 +66,7 @@
 
             
             {{-- Actions (masquées sur mobile, reprises dans le panneau hamburger) --}}
-            <div class="hidden md:flex items-center gap-4">
+            <div class="hidden lg:flex items-center gap-4">
                 @auth
                     @include('shared._notifications-bell', ['espaceNotif' => 'client', 'classeDeclencheur' => 'text-primary-pale hover:text-white'])
                 @endauth
@@ -93,7 +93,7 @@
                     @else
                         <span id="badge-panier"
                             class="hidden absolute -top-2 -right-3 bg-amber-ca text-white text-xs
-                                w-4 h-4 rounded-full flex items-center justify-center font-semibold">
+                                w-4 h-4 rounded-full items-center justify-center font-semibold">
                             0
                         </span>
                     @endif
@@ -156,7 +156,7 @@
             <button type="button" id="btn-menu-mobile" onclick="toggleMenuMobile()"
                 aria-haspopup="true" aria-expanded="false" aria-controls="menu-mobile-panel"
                 aria-label="Ouvrir le menu"
-                class="md:hidden text-primary-pale hover:text-white leading-none px-1">
+                class="lg:hidden text-primary-pale hover:text-white leading-none px-1">
                 <x-heroicon-o-bars-3 class="w-6 h-6" />
             </button>
         </div>
@@ -167,7 +167,7 @@
              pousser le contenu de la page — sinon l'ouverture du menu
              agrandit visuellement le header. --}}
         <div id="menu-mobile-panel"
-            class="hidden md:hidden absolute top-full left-0 right-0 z-50
+            class="hidden lg:hidden absolute top-full left-0 right-0 z-50
                    bg-primary-dark border-t border-white/10 px-6 py-4 space-y-4
                    max-h-[calc(100vh-3.25rem)] overflow-y-auto shadow-lg">
             <form action="{{ route('client.catalogue') }}" method="GET" class="flex items-center gap-2">
@@ -236,11 +236,11 @@
 
     {{-- FOOTER --}}
     <footer class="bg-primary-dark mt-12">
-        <div class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
-            <span class="text-primary-pale text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <span class="text-primary-pale text-xs text-center sm:text-left">
                 © {{ date('Y') }} ClaireAfrique — Dakar, Sénégal
             </span>
-            <div class="flex gap-6">
+            <div class="flex flex-wrap justify-center gap-x-4 gap-y-2">
                 <a href="{{ route('legal.cgu') }}" class="text-primary-pale text-xs hover:text-white">Conditions d'utilisation</a>
                 <span class="text-primary-pale text-xs">Contact</span>
                 <a href="{{ route('legal.confidentialite') }}" class="text-primary-pale text-xs hover:text-white">Confidentialité</a>
@@ -334,6 +334,7 @@ function ajouterPanier(btn, idArticle) {
             if (badge) {
                 badge.textContent = data.nbArticles;
                 badge.classList.remove('hidden');
+                badge.classList.add('flex');
             }
         } else {
             afficherToast(data.message, 'error');

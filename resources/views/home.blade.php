@@ -15,7 +15,7 @@
     </div>
 
     <div class="max-w-7xl mx-auto px-6 py-12 relative z-10">
-        <div class="grid grid-cols-2 gap-8 items-center min-h-80">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 items-center min-h-80">
 
             {{-- Livres visuels à gauche --}}
             <div class="relative flex items-center justify-center h-80">
@@ -74,13 +74,13 @@
 </div>
 
             {{-- Texte à droite --}}
-            <div class="pl-8">
+            <div class="sm:pl-8">
                 <div class="inline-flex items-center gap-2 bg-primary/10 text-primary
                             text-xs font-semibold px-3 py-1.5 rounded-full mb-4">
                     <x-heroicon-o-globe-alt class="w-4 h-4 inline-block flex-shrink-0 align-[-3px]" /> Librairie · Papeterie · Dakar
                 </div>
 
-                <h1 class="text-4xl font-medium text-ink leading-tight mb-4">
+                <h1 class="text-3xl sm:text-4xl font-medium text-ink leading-tight mb-4">
                     Découvrez votre<br>
                     <span class="text-primary-dark">nouvelle</span>
                     <span class="text-primary">collection</span>
@@ -97,7 +97,7 @@
                     Commandez depuis chez vous avec livraison rapide à Dakar.
                 </p>
 
-                <div class="flex items-center gap-4">
+                <div class="flex flex-wrap items-center gap-3 sm:gap-4">
                     <a href="{{ route('client.catalogue') }}"
                         class="bg-primary-dark text-white font-semibold px-6 py-3
                                rounded-xl hover:bg-primary transition-colors text-sm
@@ -143,7 +143,7 @@
 
 
 {{-- ═══════════════════════════════════ CATÉGORIES ═══ --}}
-<section class="max-w-7xl mx-auto px-6 py-12">
+<section class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
     <div class="flex justify-between items-end mb-6">
         <div>
             <h2 class="text-xl font-bold text-gray-800">Nos catégories</h2>

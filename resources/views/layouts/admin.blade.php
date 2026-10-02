@@ -11,7 +11,7 @@
 <div class="flex min-h-screen">
 
     {{-- SIDEBAR --}}
-    <aside class="w-48 bg-primary-dark flex flex-col flex-shrink-0 fixed top-0 left-0 h-screen z-40">
+    <aside id="staff-sidebar" class="w-64 bg-primary-dark flex flex-col flex-shrink-0 fixed top-0 left-0 h-screen z-40 -translate-x-full transition-transform duration-200 md:w-48 md:translate-x-0">
 
         <div class="px-4 py-4 border-b border-white/10">
             <div class="font-serif text-white text-base tracking-tight">Claire<span class="text-amber-ca">Afrique</span></div>
@@ -112,24 +112,30 @@
             </form>
         </div>
     </aside>
+        <button type="button" data-staff-menu-backdrop aria-label="Fermer le menu"
+            class="hidden fixed inset-0 bg-black/40 z-30 md:hidden"></button>
 
     {{-- MAIN — décalé de la largeur de la sidebar --}}
-    <div class="flex-1 flex flex-col min-h-screen ml-48">
+    <div class="w-full min-w-0 flex-1 flex flex-col min-h-screen md:ml-48">
 
         {{-- Topbar --}}
-        <header class="bg-white border-b border-primary-pale h-11 flex items-center
-                       justify-between px-5 flex-shrink-0 sticky top-0 z-30">
-            <h1 class="text-lg font-medium text-primary-dark tracking-tight">@yield('page_title')</h1>
-            <div class="flex items-center gap-4">
+        <header class="bg-white border-b border-primary-pale min-h-11 flex items-center
+                       justify-between gap-2 px-3 sm:px-5 py-2 flex-shrink-0 sticky top-0 z-30">
+            <button type="button" data-staff-menu-toggle aria-expanded="false" aria-label="Ouvrir le menu"
+                    class="md:hidden text-primary-dark p-1 flex-shrink-0">
+                <x-heroicon-o-bars-3 class="w-6 h-6" />
+            </button>
+            <h1 class="min-w-0 flex-1 truncate text-sm sm:text-lg font-medium text-primary-dark tracking-tight">@yield('page_title')</h1>
+            <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                 @include('shared._notifications-bell', ['espaceNotif' => 'admin'])
-                <span class="text-xs text-gray-400">
+                <span class="hidden sm:inline text-xs text-gray-400">
                     {{ now()->locale('fr')->isoFormat('dddd D MMMM YYYY') }}
                 </span>
             </div>
         </header>
 
         {{-- Content --}}
-        <main class="flex-1 p-5">
+        <main class="min-w-0 flex-1 p-3 sm:p-5">
             @if(session('success'))
                 <div class="bg-primary-pale text-primary-dark text-sm px-4 py-3
                             rounded-lg mb-4" role="status">
